@@ -1,0 +1,25 @@
+PEGAR VOLTADO PARA A ALGEBRA LINEAR
+
+Introdução
+	- Problematizaçao
+	- Motivaçao do Método
+	- Um pouco sobre o método
+	- Autores
+	- História
+
+Fundamentação
+
+Explicação do Método
+Exemplo 1
+Exemplo 2
+
+POSCOMP
+2011-5
+
+Aplicações Gerais
+
+Aplicações na Computação
+
+Codificação
+
+Explicação da Codificação

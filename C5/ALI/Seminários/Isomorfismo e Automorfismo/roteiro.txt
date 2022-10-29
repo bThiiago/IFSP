@@ -1,0 +1,34 @@
+- Introdução: 
+    - Nessa parte do trabalho iniciaremos falando sobre conceitos necessários para compreender o que é isomorfismo e automorfismo (função bijetora e tal)
+    - Utilizar exemplos para todos os conceitos apresentados alem de utilizar imagens para ilustrar os conceitos.
+
+- Isomorfismo
+    - Explicar detalhadamente o que é isomorfismo, qual a ideia por tras, etc.
+    
+- AUtomorfismo
+    - Explicar detalhadamente o que é automorfismo, fazendo referencia ao Isomorfismo, etc.
+    
+- Prova Matemática
+
+- Exemplos
+    - no minimo 4 Exemplos
+    
+- Exercícios da POSCOMP (Essa é uma prova para pós graduação, acho interessante a gente colocar isso no trabalho)
+    
+- Aplicações Genéricas
+    - Na Algebra, Matemática, etc.
+    
+- Aplicações na Computação
+    - Reconhecimento de Imagens
+        http://dspace.nead.ufsj.edu.br/trabalhospublicos/bitstream/handle/123456789/68/EDUARDO%20SCHWARTZ_12293_assignsubmission_file_TCC-Transformações%20Lineares.pdf?sequence=1&isAllowed=y
+        
+        
+    - Grafos
+        - Definir o que é um grafo, como interpretar um grafo, maneiras de representar um grafo (matriz, imagem, etc).
+        - Uso de grafos na computação.
+        - Isomorfismo entre grafos.
+        - Problema do Caixeiro Viajante
+
+- Aplicação na Computação
+    - Isomorfismo entre grafos - implementação em Python utilizando a biblioteca de grafos.
+        

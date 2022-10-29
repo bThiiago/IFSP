@@ -1,0 +1,17 @@
+Agrupamento 2 - 
+  Within cluster sum of squared errors: 12.143688281579722
+  Incorrectly clustered instances: 50.0	 33.3333 %
+
+Agrupamento 3 - 
+  Within cluster sum of squared errors: 6.998114004826762
+  Incorrectly clustered instances: 17.0	 11.3333 %
+
+Agrupamento 4 - 
+  Within cluster sum of squared errors: 5.532831003081898
+  Incorrectly clustered instances: 44.0	 29.3333 %
+
+Agrupamento 5 - 
+  Within cluster sum of squared errors: 5.130784647061167
+  Incorrectly clustered instances: 48.0	 32      %
+
+

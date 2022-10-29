@@ -1,0 +1,13 @@
+A Técninca proposta pelo IFPUG possui uma análise de pontos de função mais detalhada e precisa, isso se deve ao fato de que para definir a complexidade de cada componente lógico é levado em conta um conjunto de fatores que determinam mais instabilidade na complexidade dos componentes lógicos, ou seja, eles podem variar entre baixa, média e alta. Tendo isso em vista, a técnica do IFPUG proporciona uma contagem mais precisa porém mais trabalhosa.
+
+Em contrapartida, a Técnica Estimada definida pela NESMA possui uma análise mais genérica sobre a complexidiade dos componentens, definindo uma complexidade constante para cada tipo de componente. Portanto, essa técnica é menos trabalhosa e oferece uma estimativa dos pontos de função de cada componente lógico, implicando em um menor nivel de detalhamento quando comparada com a técnica do IFPUG.
+
+Analisando o Projeto de Software DoIt através das duas técnicas foram obtidos os seguintes resultados de ponto de função:
+- IFPUG: 176.
+- NESMA Estimada: 190.
+
+Os resultados possuem um alta nivel de semelhança, variando somente 10% de um para o outro. Quando comparado o esforço empregado para o cálculo da complexidade, a técnica do IFPUG necessitou de um tempo de trabalho consideravelmente maior para a contagem dos pontos de função quando comparada com a técnica Estimada. Ademais, a Técnica Estimada é menos sucetivel a erros humanos de contagem pois não leva em consideração os Tipos de Dados e os Tipos Relacionais. 
+
+PERGUNTAR SOBRE NECESSIDADE DO PROTOTIPO NA NESMA E NA IFPUG
+
+16.44\left(25\cdot 3.1^2-155\cdot 3.1+240\right)+20.08\left(-25\cdot 3.1^2+150\cdot 3.1-224\right)+\:24.53\left(\frac{\left(25\cdot 3.1^2\right)}{2}-\frac{\left(145\cdot 3.1\right)}{2}+105\right)

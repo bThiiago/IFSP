@@ -1,0 +1,33 @@
+Planning Poker
+
+A) Como <Usuário> Quero <poder redefinir minha senha de acesso quando precisar> Para <recuperar meu acesso ao sistema> - 8
+
+B) Como <Personal> Quero <cadastrar meus alunos na aplicação> Para <que eles tenham acesso aos seus dados e eu possa controlar quem acessa o sistema> - 5
+
+C) Como <Usuário> Quero <poder editar meus dados cadastrais> Para <manter minhas informações atualizadas> - 3
+
+D) Como <Personal> Quero <manter (cadastrar, editar, remover e visualizar) os exercícios padrões da academia> Para <não precisar ficar reescrevendo as mesmas coisas toda vez> - 8
+
+E) Como <Personal> Quero <anexar um vídeo a cada exercício> Para <que os alunos possam identificar aquele exercício mais facilmente> - 1
+
+F) Como <Personal> Quero <gerenciar (cadastrar, remover e visualizar) as fichas de treino de meus alunos> Para <conseguir fornecer um atendimento mais personalizado para cada um> - 13
+
+G) Como <Personal> Quero <gerenciar (cadastrar, remover e visualizar) as avaliações físicas de meus alunos> Para <conseguir controlar o progresso físico deles> - 13
+
+H) Como <Personal> Quero <gerenciar (cadastrar, remover, editar e visualizar) o mural de avisos> Para <manter os alunos informados e o mural de avisos limpo e organizado> - 9
+
+I) Como <Personal> Quero <gerar relatórios das fichas de treino dos meus alunos> Para <que eu possa imprimir e entregar as mesmas para eles> - 8
+
+J) Como <Personal> Quero <gerar relatório das avaliações físicas dos meus alunos> Para <que eu possa imprimir e entregar as mesmas para eles após as consultas> - 8
+
+K) Como <Aluno> Quero <consultar minhas fichas de treino> Para <visualizar os meus treinos> - 3
+
+L) Como <Aluno> Quero <consultar minhas avaliações físicas> Para <que eu possa acompanhar meu desenvolvimento> - 3
+
+M) Como <Aluno> Quero <imprimir minhas fichas de treino> Para <consulta-las quando não tiver internet> - 3
+
+N) Como <Aluno> Quero <imprimir minhas avaliações físicas> Para <envia-la para meus nutricionistas e amigos> - 3
+
+O) Como <Personal> Quero <cadastrar mais personais na aplicação> Para <manter o quadro de personais atualizado> - 5
+
+P) Como <Aluno> Quero <desejo visualizar o mural de avisos> Para <para me manter informado sobre a academia> - 0

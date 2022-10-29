@@ -1,0 +1,3 @@
+Para rodar o algoritmo instale o Jupyter Notebook: https://anaconda.org/anaconda/jupyter
+
+Após isso, inicie o Jupyter e abra o arquivo lu.ipynb disponível nesse diretório.
