@@ -1,0 +1,4 @@
+Uma Estrutura de Dados consiste em uma organização de dados na memória de um computador ou em um
+dispositivo de armazenamento, de modo que esses dados possam ser utilizados de forma eficiente.
+A maior diferença dos dados primitivos é a sua forma de alucação, enquanto a estrutura de dados
+armazena os elementos em vetores, estruturas e outros, a primitiva aloca um só elemento em um item.

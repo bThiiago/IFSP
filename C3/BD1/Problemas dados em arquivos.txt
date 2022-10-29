@@ -1,0 +1,30 @@
+BANCO DE DADOS - 05/03
+Nome: Thiago Bruchmann
+
+- redundância e inconsistência;
+
+	A redundância é informação repetida em diversos lugares (arquivos), a inconsistência decorre da redundância.
+	Várias cópias dos dados poderão divergir ao longo do tempo.
+
+
+- problemas de integridade;
+
+	Valores dos dados armazenados devem satisfazer a certas restrições para manutenção da consistência.
+	A idade de uma pessoa não pode ser cadastrada negativa.
+	Os programadores determinam o cumprimento desta restrição
+	através da adição de código apropriado.
+
+
+- problemas de atomicidade;
+
+	Algumas operações devem ser feitas de forma única, atômica, a fim de assegurar a integridade e consistência dos dados.
+	É essencial para a consistência do banco de dados que operações importantes ocorram, ou não sejam efetuadas. 
+	Por exemplo, uma transferência de dinheiro deve ser uma operação atômica – deve ocorrer por completo, ou não ocorrer. 
+
+
+- anomalias de acesso concorrente;
+
+	Atualizações concorrentes podem resultar eminconsistências.
+	2 pessoas utilizando o mesmo local, a primeira pessoa salva uma alteração a e segunda salva outra logo em seguida,
+	os dados da primeira serão perdidos
+	Operações concorrentes causam a perda de dados.

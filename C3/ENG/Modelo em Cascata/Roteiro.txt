@@ -1,0 +1,137 @@
+// LEGENDA: //
+* slide
+- tópico
+:: fala
+
+
+// ROTEIRO //
+
+
+	[Thiago]
+* apresentação dos membros
+:: Olá professora, olá a todos, nossa apresentação é sobre o tema "modelo cascata",
+meu nome é thiago e eu vou estar fazendo está apresentação junto ao membro arthur;
+
+:: Olá professora, olá a todos, eu sou o integrante arthur;
+
+* roteiro
+:: seguiremos o roteiro descrito no slide (ler todos os tópicos);
+
+O que é?
+Contextualização
+Etapas
+Vantagens
+Desvantagens
+Por que o modelo cascata não é mais utilizado?
+Ausência de feedback
+Conclusão
+
+
+* o que é o modelo cascata?
+:: o modelo cascata tambem chamado de linear ou clássico, utiliza uma forma sequencial de desenvolvimento,
+como se pode ver na imagem no slide, na primeira vez que uma fase desse desenvolvimento é completada, 
+ele prossegue pra próxima fase e não retorna á alguma fase anterior.
+
+
+
+	[Arthur]
+* contextualização
+- o modelo inicial foi proposto por Winston Walker Royce (15/08/1929 – 07/06/1995) em 1970;
+
+- conceito defeituoso?
+	:: argumentava que se tratava de um conceito defeituoso.
+	:: explorava um novo conceito a partir de um modelo inicial em que, diferentemente do seu antecessor,
+	que só recebia feedback pós finalização, receberia feedback a cada fase de desenvolvimento;
+	
+- implementação arriscada
+	:: Royce apesar de compreender o modelo cascata com um modelo organizado, descrevia que possui uma implementação
+	arriscada, pois somente na fase de testes, uma das fases finais do desenvolvimento, os recursos do software seriam
+	utilizados pela primeira vez, o que faria ser necessário o retrabalho do projeto.
+
+
+
+	[Thiago]
+* quais são suas etapas?
+	
+	- levantamento de requisitos;
+    :: nesta fase é aonde o cliente determina os requisitos do software, tal como seus objetivos e limitações;
+    
+    - projeto; 
+    :: esta etapa é divida em várias sub-etapas, que no caso são: definição de um cronograma, definição de tarefas, estimativa de
+    tempo para a finalização das etapas, definição da equipe de desenvolvimento e a modelagem da interface e da arquitetura do sistema;
+    
+    - implementação;
+    :: nessa etapa se inicia o desenvolvimento propriamente dito, aonde a equipe de programadores inicia o desenvolvimento em código
+    do sistema de acordo com os requisitos predeterminados; 
+    
+    - verificação;
+    :: aqui se iniciam os testes do sistema para a detecção de erros e saber se o sistema cumpre com os requisitos estabelecidos;
+    
+    - manutenção;
+    :: esta é a fase final do desenvolvimento, aonde o cliente vai avaliar se o sistema é funcional e cumpre com todas as necessidades
+    exigidas, é aonde ocorre o feedback;
+
+
+
+	[Arthur]
+* vantagens
+	
+- não permite pular fases.
+	:: portanto o desenvolvimento é focado em uma fase de cada vez para evitar que haja erros
+	no projeto final, ou seja, não se podem pular fases até que a fase atual esteja 100% completa.	
+
+
+* desvantagens
+
+- exige que todos os requisitos sejam descritos logo no inicio do projeto, o que dificulta seu desenvolvimento;
+	:: exige que todos os requisitos sejam descritos logo no inicio do projeto, o que dificulta seu desenvolvimento;
+
+
+
+	[Thiago]
+* Porque o modelo cascata não é mais utilizado;
+:: O modelo cascata está cada vez mais inutilizado devido a seus vários problemas, eles são: 
+
+- Dificuldade no cumprimento de cronograma
+	:: dificuldade para cumprir o cronograma do projeto e os prazos de entrega
+
+- Problemas financeiros ultrapassando o orçamento
+	:: problemas financeiros devido à ultrapassagem do orçamento previsto
+
+- Dificuldade em atender expectativas do usuário final
+	:: dificuldade em atender às expectativas dos usuários finais
+
+- Falta de produtividade
+	:: Para que as pessoas programadoras trabalhem em seu máximo potencial é importante que elas tenham sempre tarefas disponíveis.
+	No modelo cascata isso é dificultado, já que as etapas ocorrem de forma sequencial e é preciso respeitar essa definição.
+	Assim, algumas pessoas da equipe podem ficar ociosas, principalmente no início e no fim de cada etapa.
+	Isso leva a perdas de tempo e atrasa o andamento do projeto, já que um processo menos rígido permitiria que elas trabalhassem de forma simultânea.
+	
+
+
+	[Arthur]
+* ausencia de feedback;
+
+- Falta de interação do cliente
+	:: Como ja foi dito em slides anteriores, o modelo cascata original não contava com feedbacks a cada fase de desenvolvimento,
+	o que dificultava na recepção do projeto por parte do cliente e gerava insatisfações com o produto final, levando ao retrabalho
+	do projeto.
+	
+- Grande quantidade de retrabalho
+	:: Quando o projeto está concluído, a primeira versão executável do software é entregue ao cliente para que ele opine sobre ela.
+	Caso haja algum problema, a equipe terá que reiniciar o modelo em cascata para realizar as mudanças necessárias.
+	Se elas forem muitas, isso pode significar uma grande quantidade de retrabalho e custos desnecessários para a empresa.
+
+
+
+	[Thiago]
+* conclusão
+
+:: Como foi apresentado, é possivel ver que o modelo cascata não é recomendado como modelo a ser seguido, e a tendência
+é que seja usado cada vez menos.
+
+
+* finalização
+
+:: Este foi o nosso trabalho, agradecemos a atenção de todos.
+
