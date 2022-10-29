@@ -1,0 +1,89 @@
+(defstruct funcionario 
+   nome 
+   data_nasc 
+   depto 
+   salario
+   data_contr
+)
+
+( setq funcionario1 (make-funcionario :nome "Luiz Augusto Silva"
+   :data_nasc "1999 12 03" 
+   :depto 15
+   :salario 3770.00
+   :data_contr "2020 05 01")
+)
+
+( setq funcionario2 (make-funcionario :nome "Carla Maria Queiroz"
+   :data_nasc "2000 05 20" 
+   :depto 01
+   :salario 5200.00
+   :data_contr "2019 11 03")
+)
+
+( setq funcionario3 (make-funcionario :nome "Sergio Vasconcelos"
+   :data_nasc "1997 02 11" 
+   :depto 02
+   :salario 4810.00
+   :data_contr "2021 01 21")
+)
+
+( setq funcionario4 (make-funcionario :nome "Leticia Marques"
+   :data_nasc "2001 10 07" 
+   :depto 02
+   :salario 5090.00
+   :data_contr "2020 07 16")
+)
+
+( setq funcionario5 (make-funcionario :nome "Gustavo Leite Jr"
+   :data_nasc "1998 08 26" 
+   :depto 01
+   :salario 6070.00
+   :data_contr "2017 06 19")
+)
+
+( setq funcionario6 (make-funcionario :nome "Heloisa Carvalho"
+   :data_nasc "1978 09 09" 
+   :depto 02
+   :salario 7530.00
+   :data_contr "2011 11 03")
+)
+
+( setq funcionario7 (make-funcionario :nome "Tales Lemos Filho"
+   :data_nasc "2002 07 29" 
+   :depto 15
+   :salario 2530.00
+   :data_contr "2020 10 09")
+)
+
+(defun total_salario (depto)
+    (if (= 01 depto)
+        (+ (funcionario-salario funcionario2) (funcionario-salario funcionario5))
+    (if (= 02 depto)
+        (+ (funcionario-salario funcionario3) (funcionario-salario funcionario4) (funcionario-salario funcionario6))
+    (if (= 15 depto)
+        (+ (funcionario-salario funcionario1) (funcionario-salario funcionario7))
+        (+ 0.0))))
+)
+
+(write-line "Departamento 01 - Salario gasto: ")
+(write (total_salario 1))
+(write-line " ")
+(write-line "--------------------------------")
+
+(write-line "Departamento 02 - Salario gasto: ")
+(write (total_salario 2))
+(write-line " ")
+(write-line "--------------------------------")
+
+(write-line "Departamento 15 - Salario gasto: ")
+(write (total_salario 15))
+(write-line " ")
+(write-line "--------------------------------")
+
+(write-line "Departamento 11 - Salario gasto: ")
+(write (total_salario 11))
+(write-line " ")
+(write-line "--------------------------------")
+
+(write-line "Departamento 07 - Salario gasto: ")
+(write (total_salario 7))

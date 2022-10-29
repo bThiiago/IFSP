@@ -1,0 +1,27 @@
+O STP – Spanning-Tree Protocolo, é utilizado pelos switches para evitar loops de camada 2.
+Basicamente o STP bloqueia caminhos redundantes, evitando assim a formação de loops.
+
+Para o STP funcionar o primeiro passo é eleger um switch root, e isso é feito da seguinte forma:
+
+Quando os switch são ligados todos eles se consideram o root bridge. 
+E todos passam a gerar e enviar Configuration BPDUs – Bridge Protocol Data Units a cada 2 segundos (hello timer) informando:
+
+Root Bridge ID (RBID)
+Root Patch Cost (RPC)
+Sender Bridge ID (SBID)
+Sender Port ID (SPID)
+Receiver Port ID (RPID)
+
+Quando um switch vizinho recebe um Configuration BPDU ele compara com suas próprias informações para identificar qual é o melhor de fato.
+
+A porta que recebe o melhor BPDU em uma ponte é a switch root.
+Esta é a porta mais próxima do Root Bridge em termos de custo de trajeto. 
+O root bridge envia os BPDUs que são mais úteis do que esses que toda a outra ponte envia.
+O Root Bridge é o único Bridge da rede que não possui um Root Port.
+Todos as outras pontes recebem BPDUs em pelo menos uma porta.
+
+Uma porta é designada se pode enviar o melhor BPDU no segmento a que está conectado. 
+As pontes 802.1D conectam juntos diferentes segmentos para criar um domínio interligado.
+Em um dado segmento, pode somente haver um trajeto para o bridge-raiz. Se há dois, há um Loop de Bridging na rede. 
+Todas as pontes conectadas a um dado segmento escutam os BPDU de cada um e concordam com a ponte que envia o melhor BPDU como a ponte designada para o segmento. 
+A porta nessa ponte que corresponde é a porta designada para esse segmento.
