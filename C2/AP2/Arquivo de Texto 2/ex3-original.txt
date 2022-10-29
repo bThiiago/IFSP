@@ -1,0 +1,2 @@
+Este e o arquivo original.
+As linhas estao todas ok.
