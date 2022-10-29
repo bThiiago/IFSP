@@ -1,0 +1,15 @@
+INSERT INTO aluno (idaluno, nome, matricula, cpf, telefone) VALUES
+(1, 'Thiago', 'PE300712X', 123123123, '(18)123123'),
+(2, 'Fulemo', 'PE1234456', 222333444, '(11)122234');
+
+INSERT INTO disciplina (iddisciplina, sigla, nome, curso, media) VALUES
+(1, 'BD2', 'Banco de Dados 2', 'BCC', 10),
+(2, 'ED2', 'Estrutura de Dados 2', 'BCC', 9);
+
+INSERT INTO matricula (idmatricula, nota, data, aluno_idaluno, disciplina_iddisciplina) VALUES
+(1, 10, '2021/01/01', 1, 1),
+(2, 9, '2021/01/01', 2, 2);
+
+SELECT A.idaluno, A.nome, A.matricula FROM aluno A, matricula M WHERE M.disciplina_iddisciplina = 1 and M.aluno_idaluno = idaluno;
+SELECT A.idaluno, A.nome, A.matricula FROM aluno A, matricula M, disciplina D WHERE D.iddisciplina = 1 and M.disciplina_iddisciplina = iddisciplina and D.media > 9;
+SELECT A.idaluno, A.nome, A.matricula FROM aluno A, matricula M, disciplina D WHERE D.iddisciplina = 1 and M.disciplina_iddisciplina = iddisciplina and D.curso = 'BCC';

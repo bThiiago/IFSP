@@ -1,0 +1,82 @@
+
+-- 1
+
+CREATE OR REPLACE FUNCTION realizar_compra(data DATE) RETURNS VARCHAR
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE REGISTRO RECORD;
+begin
+		IF (TG_OP='INSERT') THEN
+			INSERT INTO compra VALUES(NEW.idcompra,data,0);
+		END IF;
+end $$
+
+
+-- 2
+
+CREATE OR REPLACE FUNCTION lanca_despesa() RETURNS VARCHAR
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE REGISTRO RECORD;
+	  SITUACAO VARCHAR(30);
+begin
+      SITUACAO='APROVADO';
+	  SELECT IDMATRICULA FROM NOTA WHERE IDMATRICULA=MAT LIMIT 1 INTO MATRICULA;
+	 
+		  FOR REGISTRO IN SELECT * FROM NOTA WHERE IDMATRICULA=MAT LOOP
+			   MEDIA = (REGISTRO.NOTA1+REGISTRO.NOTA2+REGISTRO.NOTA3+REGISTRO.NOTA4)/4;
+			   IF MEDIA < 6.0 THEN
+				  SITUACAO = 'REPROVADO';
+			   END IF;	  
+		  END LOOP;
+	 
+	  IF MATRICULA IS NULL THEN
+	     SITUACAO='REPROVADO';
+	  END IF;	 
+	  RETURN SITUACAO;
+end $$
+
+
+-- 6
+
+CREATE VIEW pendente AS
+with tabela as (
+	select DISTINCT(TURMA.IDTURMA) AS NUMTURMA ,MATRICULA.IDALUNO from matricula 
+	       join turma on (turma.idturma=matricula.idturma)
+) select  NUMTURMA,SUM(P.VALOR) as pagamentos,(SELECT SUM(VALOR) FROM DESPESASTURMA WHERE IDTURMA=TABELA.NUMTURMA) AS DESPESAS FROM TABELA 
+		JOIN PAGAMENTO P ON (TABELA.IDALUNO=P.IDALUNO) WHERE P.IDCAIXA IS NOT NULL
+		GROUP BY NUMTURMA
+		ORDER BY NUMTURMA
+
+
+-- 7
+
+CREATE OR REPLACE FUNCTION atenderpedencias() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE DATA DATE;
+begin
+      IF (TG_OP='UPDATE') THEN
+	     IF NEW.IDCAIXA IS NOT NULL THEN
+			 SELECT IDCAIXA FROM CAIXA WHERE IDCAIXA=NEW.IDCAIXA INTO DATA;
+			 IF DATA IS NULL THEN 
+				 INSERT INTO CAIXA VALUES(NEW.IDCAIXA,0,0,0);
+			 END IF;
+			 UPDATE CAIXA SET SAIDA = SAIDA + NEW.VALOR WHERE IDCAIXA=NEW.IDCAIXA;
+			 update CAIXA SET SALDO = ENTRADA - SAIDA WHERE IDCAIXA=NEW.IDCAIXA;
+		 END IF;
+	  end if;			
+	  RETURN NEW;
+end $$
+
+CREATE TRIGGER atualizar_pendencias before UPDATE on produto_has_compra
+FOR EACH ROW EXECUTE PROCEDURE atenderpedencias();
+
+
+-- 8
+
+create view caixa_relatorio as
+select c.idcaixa, c.saldo, c.data, c.status, l.descricao from caixa c
+join lancamentocaixa l on (l.idcaixa = c.idcaixa) where c.data = CURRENT_DATE order by c.idcaixa
+
+select * from caixa_relatorio

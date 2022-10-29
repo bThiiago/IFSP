@@ -1,0 +1,24 @@
+CREATE DATABASE IF NOT EXISTS exercicios;
+
+CREATE TABLE IF NOT EXISTS teste (
+   id SERIAL,
+   nome VARCHAR(80),
+   endereco VARCHAR(100),
+   PRIMARY KEY (id));
+
+CREATE ROLE financeiro LOGIN;
+
+REVOKE SELECT ON teste FROM financeiro ;
+
+GRANT ALL PRIVILEGES ON teste TO financeiro;
+
+REVOKE DELETE ON teste FROM financeiro;
+
+CREATE ROLE administrativo LOGIN INHERIT;
+GRANT financeiro TO administrativo;
+
+CREATE USER thiago WITH PASSWORD 'ifsp';
+
+GRANT CONNECT ON DATABASE exercicios TO thiago;
+
+ALTER USER thiago WITH SUPERUSER;

@@ -1,0 +1,103 @@
+create schema if not exists provabim1;
+set search_path to provabim1;
+show search_path;
+
+ 
+CREATE TABLE IF NOT EXISTS provabim1.curso (
+  idCurso SERIAL NOT NULL,
+  nomeCurso VARCHAR(45) NULL,
+  totalHoras INT NULL,
+  valorDoCurso FLOAT NULL,
+  PRIMARY KEY (idCurso));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.disciplinas (
+  idDisciplinas SERIAL NOT NULL,
+  nome VARCHAR(45) NULL,
+  cargaHoraria INT NULL,
+  qtdeHoras INT NULL,
+  PRIMARY KEY (idDisciplinas));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.curso_has_disciplinas (
+  idCurso SERIAL NOT NULL,
+  idDisciplinas INT NOT NULL,
+  PRIMARY KEY (idCurso, idDisciplinas),
+  FOREIGN KEY (idCurso) REFERENCES provabim1.curso (idCurso),
+  FOREIGN KEY (idDisciplinas) REFERENCES provabim1.disciplinas (idDisciplinas));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.turmas (
+  idCurso INT NOT NULL,
+  idTurmas SERIAL NOT NULL,
+  sala INT NULL,
+  horarioInicio TIME NULL,
+  horarioFim TIME NULL,
+  totalAluno INT NULL,
+  PRIMARY KEY (idTurmas),
+  FOREIGN KEY (idCurso) REFERENCES provabim1.curso (idCurso));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.alunos (
+  idAlunos SERIAL NOT NULL,
+  nome VARCHAR(45) NULL,
+  dataNascimento DATE NULL,
+  PRIMARY KEY (idAlunos));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.matricula (
+  idMatricula SERIAL NOT NULL,
+  data DATE NULL,
+  idAlunos INT NOT NULL,
+  idTurmas INT NOT NULL,
+  qtdeParcelas INT NULL,
+  situacao VARCHAR(1) NULL,
+  PRIMARY KEY (idMatricula),
+  FOREIGN KEY (idTurmas) REFERENCES provabim1.turmas (idTurmas),
+  FOREIGN KEY (idAlunos) REFERENCES provabim1.alunos (idAlunos));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.notas (
+  idMatricula INT NOT NULL,
+  idNotas SERIAL NOT NULL,
+  idDisciplinas INT NOT NULL,
+  nota1 FLOAT NULL,
+  nota2 FLOAT NULL,
+  nota3 FLOAT NULL,
+  nota4 FLOAT NULL,
+  PRIMARY KEY (idMatricula, idNotas),
+  FOREIGN KEY (idDisciplinas) REFERENCES provabim1.disciplinas (idDisciplinas),
+  FOREIGN KEY (idMatricula) REFERENCES provabim1.matricula (idMatricula));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.caixa (
+  idCaixa DATE NOT NULL,
+  entrada FLOAT NULL,
+  saida FLOAT NULL,
+  saldo FLOAT NULL,
+  PRIMARY KEY (idCaixa));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.despesas_turma (
+  idDespesas_turma SERIAL NOT NULL,
+  valor FLOAT NULL,
+  referente VARCHAR(45) NULL,
+  data DATE NULL,
+  idTurmas INT NOT NULL,
+  idCaixa DATE NOT NULL,
+  PRIMARY KEY (idDespesas_turma),
+  FOREIGN KEY (idTurmas) REFERENCES provabim1.turmas (idTurmas),
+  FOREIGN KEY (idCaixa) REFERENCES provabim1.caixa (idCaixa));
+
+
+CREATE TABLE IF NOT EXISTS provabim1.pagamento (
+  idAlunos INT NOT NULL,
+  idPagamento INT NOT NULL,
+  vencimento DATE NOT NULL,
+  valor FLOAT NULL,
+  idCaixa DATE NOT NULL,
+  refMatricula INT NULL,
+  PRIMARY KEY (idAlunos, idPagamento),
+  FOREIGN KEY (idAlunos) REFERENCES provabim1.alunos (idAlunos),
+  FOREIGN KEY (idCaixa) REFERENCES provabim1.caixa (idCaixa));
+  

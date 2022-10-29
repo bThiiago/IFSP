@@ -1,0 +1,12 @@
+O Dr. Ciro Jõao Dentista,  tem uma clinica e deseja informatiza-la para isso, ele entrou em contato com voce 
+e contratou o seu trabalho de Analista. 
+Ele precisa de um projeto onde possa controlar as consultas, 
+ele precisa de uma agenda, 
+controle de consultas onde possa informar o que foi discutido com paciente, 
+remedios e tratamentos efetuados, 
+forma de pagamento do tratamento e despesa da clinica,
+ produtos utilizados nos tratamentos, 
+ compra de material e pagamento a fornecedor, 
+ orçamento ao paciente.
+
+Na clinica 3 médicos atendem e as despesas devem ser controladas em separado tanto o pagamento de consulta como despesas geradas por cada um.

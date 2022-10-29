@@ -1,0 +1,183 @@
+-- 1
+
+CREATE TABLE IF NOT EXISTS cdnovo.cliente
+(
+    codcli integer NOT NULL,
+    nome character varying(60),
+    endereco character varying(50),
+    cidade character varying(50),
+    uf character varying(2),
+    cep character varying(9),
+    PRIMARY KEY (codcli)
+);
+
+CREATE TABLE IF NOT EXISTS cdnovo.venda
+(
+    idvenda integer NOT NULL,
+    datavenda date,
+    codcli integer,
+    parcelas integer,
+    PRIMARY KEY (idvenda),
+    FOREIGN KEY (codcli) REFERENCES cdnovo.cliente (codcli)
+);
+
+CREATE TABLE IF NOT EXISTS cdnovo.itemvenda
+(
+    idvenda integer NOT NULL,
+    codcd integer NOT NULL,
+    qtde integer,
+    PRIMARY KEY (idvenda, codcd),
+    FOREIGN KEY (codcd) REFERENCES cdnovo.cd (codcd),
+    FOREIGN KEY (idvenda) REFERENCES cdnovo.venda (idvenda)
+);
+
+-- 2 e 3
+
+CREATE OR REPLACE PROCEDURE cdnovo.insere(
+	)
+LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE cont int default  1;
+DECLARE codcli int default  1;
+
+begin
+for i in 1..100 loop
+	INSERT into cliente values (i,'AAAAA','RUA SAO PAULO','PRESIDENTE PRUDENTE','SP','19470-000');
+end loop;
+
+FOR i IN 1..1000 LOOP
+	insert into venda values (i,current_date-cont,codcli,0) ;
+
+	codcli = codcli +1;
+	cont=cont+1;
+		
+	if cont>=100 then
+	 cont = 1;
+	end if;
+		
+	if codcli >= 100 then
+	 codcli = 1;
+	end if; 
+END LOOP;
+end
+$BODY$;
+
+-- 5
+
+ALTER TABLE cdnovo.itemvenda ADD COLUMN preco numeric(14,2);
+
+-- 6
+
+ALTER TABLE cdnovo.venda ADD COLUMN valortotal numeric(14,2);
+
+CREATE FUNCTION cdnovo.calculavalortotal()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	IF(TG_OP='INSERT')THEN
+		UPDATE venda SET valortotal = valortotal + new.qtde*new.preco WHERE idvenda = new.idvenda;
+		RETURN NEW;
+	END IF;
+	
+	IF(TG_OP='UPDATE')THEN
+		UPDATE venda SET valortotal = valortotal - (old.qtde*old.preco) + new.qtde*new.preco WHERE idvenda = NEW.idvenda;
+		RETURN NEW;
+	END IF;
+	
+	IF(TG_OP='DELETE')THEN
+		UPDATE venda SET valortotal = valortotal - old.qtde*old.preco WHERE idvenda = OLD.idvenda;
+		RETURN OLD;
+	END IF;
+END
+$BODY$;
+
+-- 7
+
+ALTER TABLE cdnovo.cliente ADD COLUMN valorcomprado numeric(14,2);
+
+CREATE FUNCTION cdnovo.calculavalorcomprado()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	IF(TG_OP='INSERT')THEN
+		UPDATE cliente SET valorcomprado = valorcomprado + new.valortotal WHERE codcli = new.codcli;
+		RETURN NEW;
+	END IF;
+	
+	IF(TG_OP='UPDATE')THEN
+		UPDATE cliente SET valorcomprado = valorcomprado + new.valortotal WHERE codcli = new.codcli;
+		RETURN NEW;
+	END IF;
+	
+	IF(TG_OP='DELETE')THEN
+		UPDATE cliente SET valorcomprado = valorcomprado - old.valortotal WHERE codcli = old.codcli;
+		RETURN OLD;
+	END IF;
+END
+$BODY$;
+
+-- 8
+
+ALTER TABLE cdnovo.cd ADD COLUMN qtdeestoque integer;
+
+CREATE FUNCTION cdnovo.estoquecd()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	IF(TG_OP='INSERT')THEN
+		UPDATE cd SET qtdestoque = qtdestoque + 1 WHERE codcd = new.codcd;
+		RETURN NEW;
+	END IF;
+	
+	IF(TG_OP='UPDATE')THEN
+		UPDATE cd SET qtdestoque = new.qtdestoque WHERE codcli = new.codcli;
+		RETURN NEW;
+	END IF;
+	
+	IF(TG_OP='DELETE')THEN
+		UPDATE cd SET qtdestoque = qtdestoque - 1 WHERE codcli = old.codcli;
+		RETURN OLD;
+	END IF;
+END
+$BODY$;
+
+-- 9
+
+ALTER TABLE cdnovo.autor ADD COLUMN renda numeric(14,2);
+
+CREATE OR REPLACE FUNCTION cdnovo.rendaaut(codigoautor integer)
+    RETURNS numeric
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE total NUMERIC;
+	DECLARE totalmus NUMERIC;
+	DECLARE	dado RECORD;
+	BEGIN
+		total = 0;
+		
+		FOR dado IN (SELECT * from autor_quantidade_musica_cd WHERE codaut = dado.codaut) LOOP
+			totalmus = (SELECT SUM(qtdMusicas*preco_musica) FROM autor_quantidade_musica_cd WHERE dado.codaut = codaut AND codcd = dado.codcd);
+			total = total + totalmus * (SELECT qtde FROM vendas_cd WHERE codcd = codigoCd);
+		END LOOP;
+		
+		return total;
+	END;
+$BODY$;
+-- 10
+
+ALTER TABLE cdnovo.gravadora ADD COLUMN lucro numeric(14,2);
+
+itemvenda_insert()
+itemvenda_delete()
+itemvenda_update()

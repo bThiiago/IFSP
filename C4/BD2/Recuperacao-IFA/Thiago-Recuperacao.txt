@@ -1,0 +1,83 @@
+---------------- 1
+
+CREATE OR REPLACE FUNCTION recuperacao.gera_venda()
+RETURNS trigger AS $$
+DECLARE 
+	parcela INT DEFAULT 0;
+	contador INT DEFAULT 1;
+	vencimentoAux DATE;
+BEGIN
+	IF OLD.aprovacao IS NULL AND NEW.aprovacao IS NOT NULL THEN
+		INSERT INTO venda(idVenda, data, valorTotal) VALUES (NEW.idOrcamento, NEW.aprovacao, 0);
+		INSERT INTO itemvenda(idVenda, qtde, valorPago, idProduto)
+		SELECT idOrcamento, qtde, valorPago, idProduto FROM itemorcamento WHERE idOrcamento = NEW.idOrcamento;
+		
+		parcela = (SELECT valorTotal FROM venda WHERE idVenda = OLD.idOrcamento)/OLD.totalParcelas;
+		
+		WHILE (contador<=OLD.totalParcelas) LOOP
+			SELECT adddate(CURRENT_DATE) INTO vencimentoAux;
+			INSERT INTO pagamento(idVenda, vencimento, valor) VALUES (NEW.idOrcamento, vencimentoAux, parcela);
+			contador = contador+1;
+		END LOOP;
+	END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER gera_venda AFTER UPDATE ON orcamento
+FOR EACH ROW EXECUTE FUNCTION gera_venda();
+
+
+---------------- 2
+
+CREATE OR REPLACE FUNCTION recuperacao.atualiza_estoque()
+RETURNS trigger AS $$
+BEGIN
+	UPDATE venda SET valorTotal = valorTotal + NEW.valorPago * NEW.quantidade WHERE idVenda = NEW.idVenda;
+	UPDATE produto SET qtde = qtde - NEW.qtde WHERE idProduto = NEW.idProduto;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER atualiza_estoque AFTER INSERT ON itemvenda
+FOR EACH ROW EXECUTE FUNCTION atualiza_estoque();
+
+
+---------------- 3
+
+CREATE OR REPLACE PROCEDURE recuperacao.atualiza_valor(x INT, cod INT) AS $$
+BEGIN
+	UPDATE produto SET valor = valor + ((x * valor)/100) WHERE idProduto = cod;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CALL atualiza_valor(5, 1);
+
+--Agua mineral foi de 10 para 10.5
+
+
+CALL atualiza_valor(100, 1);
+
+--Agua mineral foi de 10.5 para 21
+
+
+---------------- 4
+
+CREATE OR REPLACE FUNCTION recuperacao.gerar_valor_venda(cod INT) RETURNS float AS $$
+DECLARE total FLOAT;
+BEGIN
+        total = (select SUM(qtde * valorpago) from itemvenda where idvenda = cod);
+	return total;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT gerar_valor_venda(1);
+
+
+---------------- 5
+
+CREATE OR REPLACE VIEW recuperacao.relatorio_produto AS SELECT 
+p.nomeproduto, SUM(iv.idVenda) as quantasVendas, iv.qtde as qtdeVendida, p.qtde as estoque FROM produto p
+INNER JOIN itemvenda iv ON p.idProduto = iv.idProduto INNER JOIN venda v ON iv.idVenda = v.idVenda
+GROUP BY p.nomeproduto, iv.qtde, p.qtde;
+
+select * from relatorio_produto;

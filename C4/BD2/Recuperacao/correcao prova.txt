@@ -1,0 +1,293 @@
+select * from aluno
+
+CREATE OR REPLACE FUNCTION atualiza_horacurso() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+begin
+      IF (TG_OP='INSERT') THEN
+	      UPDATE CURSO SET TOTALHORAS = TOTALHORAS + (SELECT CARGAHORARIA FROM DISCIPLINA WHERE IDDISCIPLINA=NEW.IDDISCIPLINA)
+		  WHERE IDCURSO = NEW.IDCURSO;
+      END IF;
+	  IF (TG_OP='DELETE') THEN
+	      UPDATE CURSO SET TOTALHORAS = TOTALHORAS - (SELECT CARGAHORARIA FROM DISCIPLINA WHERE IDDISCIPLINA=OLD.IDDISCIPLINA)
+		  WHERE IDCURSO=OLD.IDCURSO;
+		  RETURN OLD;
+	  END IF;
+	  RETURN NEW;
+end $$
+
+CREATE TRIGGER ATUALIZARCURSO AFTER INSERT OR DELETE ON curso_has_disciplina
+FOR EACH ROW EXECUTE PROCEDURE atualiza_horacurso();
+
+select * from disciplina
+insert into disciplina values(1,'teste1',4);
+insert into disciplina values(2,'teste2',4);
+
+select * from curso
+insert into curso values (1,'curso teste',0,100);
+insert into curso values (2,'curso teste',0,200);
+
+select * from curso_has_disciplina
+insert into curso_has_disciplina values(1,1);
+insert into curso_has_disciplina values(1,2);
+delete from curso_has_disciplina where iddisciplina=2
+
+CREATE OR REPLACE FUNCTION geranotas() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+declare registro record;
+        ultimo int default 0; 
+begin
+      IF (TG_OP='INSERT') THEN
+	    for registro in  select chs.iddisciplina from turma t
+		                 join curso c on (t.idcurso=c.idcurso)
+	                     join curso_has_disciplina chs on (c.idcurso=chs.idcurso)
+						 where t.idturma=new.idturma
+						 loop
+			    select max(idnota) from nota where idmatricula=new.idmatricula into ultimo;
+				if ultimo is null then
+				   ultimo = 0;
+				end if;
+			    ultimo = ultimo + 1; 
+				insert into nota values(new.idmatricula,ultimo,0,0,0,0,registro.iddisciplina);		 
+        end loop;  
+	  end if;	
+	  RETURN NEW;
+end $$
+
+CREATE TRIGGER matriculanotas AFTER INSERT on matricula
+FOR EACH ROW EXECUTE PROCEDURE geranotas();
+
+Select * from aluno
+insert into aluno values(1,'VILSON MAZIERO','1967-08-04')
+select * from turma
+insert into turma values(1,1,'14:00:00','15:00:00',0,1)
+
+select * from matricula
+insert into matricula values (3,'2021-10-18',4,'A',1,1)
+select * from nota
+
+
+CREATE OR REPLACE FUNCTION gerapagamento() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+declare registro record;
+        ultimo int default 0; 
+		i int default 0;
+		valor float default 0;
+		data date;
+begin
+      IF (TG_OP='INSERT') THEN
+	     data = current_date;
+	     select c.valordocurso from curso c
+		        join turma t on (t.idcurso=c.idcurso)
+				where t.idturma=new.idturma into valor;
+				
+				valor = valor / new.qtdeparcelas;
+				
+		 for i in 1..new.qtdeparcelas loop
+		       insert into pagamento values(i,data,valor,new.idmatricula,null,new.idaluno);
+		       data = data + interval '30 days';
+		 end loop;		
+	  end if;			
+	  RETURN NEW;
+end $$
+
+CREATE TRIGGER matriculapagamento AFTER INSERT on matricula
+FOR EACH ROW EXECUTE PROCEDURE gerapagamento();
+
+delete from matricula
+select * from matricula
+select * from nota
+select * from pagamento
+
+CREATE OR REPLACE FUNCTION pagamentobaixa() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE DATA DATE;
+begin
+      IF (TG_OP='UPDATE') THEN
+	     IF NEW.IDCAIXA IS NOT NULL THEN
+			 SELECT IDCAIXA FROM CAIXA WHERE IDCAIXA=NEW.IDCAIXA INTO DATA;
+			 IF DATA IS NULL THEN 
+				 INSERT INTO CAIXA VALUES(NEW.IDCAIXA,0,0,0);
+			 END IF;
+			 UPDATE CAIXA SET ENTRADA = ENTRADA + NEW.VALOR WHERE IDCAIXA=NEW.IDCAIXA;
+			 update CAIXA SET SALDO = ENTRADA - SAIDA WHERE IDCAIXA=NEW.IDCAIXA;
+		 END IF;
+	  end if;			
+	  RETURN NEW;
+end $$
+
+
+CREATE TRIGGER inserircaixa before UPDATE on pagamento
+FOR EACH ROW EXECUTE PROCEDURE pagamentobaixa();
+
+select * from pagamento
+update pagamento set idcaixa='2021-10-18' where idpagamento=1
+select * from caixa
+
+
+CREATE OR REPLACE FUNCTION SITUACAOALUNO(MAT INT) RETURNS VARCHAR
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE REGISTRO RECORD;
+      MEDIA FLOAT;
+	  SITUACAO VARCHAR(12);
+	  MATRICULA INT;
+begin
+      SITUACAO='APROVADO';
+	  SELECT IDMATRICULA FROM NOTA WHERE IDMATRICULA=MAT LIMIT 1 INTO MATRICULA;
+	 
+		  FOR REGISTRO IN SELECT * FROM NOTA WHERE IDMATRICULA=MAT LOOP
+			   MEDIA = (REGISTRO.NOTA1+REGISTRO.NOTA2+REGISTRO.NOTA3+REGISTRO.NOTA4)/4;
+			   IF MEDIA < 6.0 THEN
+				  SITUACAO = 'REPROVADO';
+			   END IF;	  
+		  END LOOP;
+	 
+	  IF MATRICULA IS NULL THEN
+	     SITUACAO='REPROVADO';
+	  END IF;	 
+	  RETURN SITUACAO;
+end $$
+
+SELECT * FROM SITALUNOGERAL
+
+SELECT * FROM NOTA
+select * from matricula
+select situacaoaluno(3)
+UPDATE NOTA SET NOTA1=6,NOTA2=7,NOTA3=8,NOTA4=8 WHERE IDMATRICULA=3
+SELECT SITUACAOALUNO(3)
+
+
+
+CREATE OR REPLACE FUNCTION inc_aluno_turmas() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+begin
+      IF (TG_OP='INSERT') THEN
+	     UPDATE TURMA SET TOTALALUNOS = TOTALALUNOS + 1 WHERE IDTURMA=NEW.IDTURMA;
+	  END IF;
+	   IF (TG_OP='DELETE') THEN
+	     UPDATE TURMA SET TOTALALUNOS = TOTALALUNOS - 1 WHERE IDTURMA=OLD.IDTURMA;
+		 RETURN OLD;
+	  END IF;	
+	  RETURN NEW;
+end $$
+
+
+CREATE TRIGGER contragemaluno AFTER INSERT OR DELETE on matricula
+FOR EACH ROW EXECUTE PROCEDURE INC_ALUNO_TURMAS();
+
+SELECT * FROM TURMA
+SELECT * FROM MATRICULA
+select * from aluno
+insert into aluno values(3,'VILSON MAZIERO','1967-08-04')
+insert into matricula values (4,'2021-10-18',4,'A',1,3)
+select * from nota
+select * from pagamento
+select * from turma
+
+delete from nota where idmatricula=4
+delete from matricula where idmatricula=4
+select * from pagamento
+delete from pagamento where refmatricula=4
+
+CREATE OR REPLACE FUNCTION matriculaSituacao() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+begin
+      IF (TG_OP='UPDATE') THEN
+	      if new.situacao='C' then 
+		        update pagamento set valor = 0 where idcaixa is null and refmatricula=new.idmatricula;
+		  end if;
+	  END IF;	
+	  RETURN NEW;
+end $$
+
+CREATE TRIGGER zerarparcelas AFTER UPDATE on matricula
+FOR EACH ROW EXECUTE PROCEDURE matriculaSituacao();
+
+select * from pagamento
+select * from matricula
+select * from caixa
+update matricula set situacao='C' where idmatricula=3
+
+CREATE OR REPLACE FUNCTION despesabaixa() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE DATA DATE;
+begin
+      IF (TG_OP='UPDATE') THEN
+	     IF NEW.IDCAIXA IS NOT NULL THEN
+			 SELECT IDCAIXA FROM CAIXA WHERE IDCAIXA=NEW.IDCAIXA INTO DATA;
+			 IF DATA IS NULL THEN 
+				 INSERT INTO CAIXA VALUES(NEW.IDCAIXA,0,0,0);
+			 END IF;
+			 UPDATE CAIXA SET SAIDA = SAIDA + NEW.VALOR WHERE IDCAIXA=NEW.IDCAIXA;
+			 update CAIXA SET SALDO = ENTRADA - SAIDA WHERE IDCAIXA=NEW.IDCAIXA;
+		 END IF;
+	  end if;			
+	  RETURN NEW;
+end $$
+
+
+CREATE TRIGGER inserirdespesacaixa before UPDATE on despesasturma
+FOR EACH ROW EXECUTE PROCEDURE despesabaixa();
+
+select * from despesasturma
+insert into despesasturma values(2,50,'teste','2021-10-18',1,null)
+select * from despesasturma
+select * from caixa
+update despesasturma set idcaixa='2021-10-19' where iddespesaturma=2
+
+
+drop view balancoturma
+
+CREATE VIEW BALANCOTURMA AS
+with tabela as (
+	select DISTINCT(TURMA.IDTURMA) AS NUMTURMA ,MATRICULA.IDALUNO from matricula 
+	       join turma on (turma.idturma=matricula.idturma)
+) select  NUMTURMA,SUM(P.VALOR) as pagamentos,(SELECT SUM(VALOR) FROM DESPESASTURMA WHERE IDTURMA=TABELA.NUMTURMA) AS DESPESAS FROM TABELA 
+		JOIN PAGAMENTO P ON (TABELA.IDALUNO=P.IDALUNO) WHERE P.IDCAIXA IS NOT NULL
+		GROUP BY NUMTURMA
+		ORDER BY NUMTURMA
+
+
+select * from balancoturma			
+
+CREATE OR REPLACE FUNCTION matriculaexcluida() RETURNS trigger
+LANGUAGE 'plpgsql'
+AS $$
+DECLARE DATA DATE;
+begin
+      IF (TG_OP='DELETE') THEN
+	      DELETE FROM NOTA WHERE IDMATRICULA=OLD.IDMATRICULA;
+		  DELETE FROM PAGAMENTO WHERE REFMATRICULA=OLD.IDMATRICULA AND IDCAIXA IS NULL;
+	  end if;			
+	  RETURN NEW;
+end $$
+
+CREATE TRIGGER exclusaomatricula BEFORE DELETE on MATRICULA
+FOR EACH ROW EXECUTE PROCEDURE matriculaexcluida();
+
+delete from matricula where idmatricula=3
+select * from pagamento
+
+create view sitalunogeral as
+select m.idaluno,a.nome,m.idmatricula,situacaoaluno(m.idmatricula) from matricula m
+join aluno a on (a.idaluno=m.idaluno) order by m.idmatricula
+
+select * from sitalunogeral
+select * from matricula
+
+select * from nota
+
+select * from aluno		  
+select * from pagamento
+
+
+
+
+

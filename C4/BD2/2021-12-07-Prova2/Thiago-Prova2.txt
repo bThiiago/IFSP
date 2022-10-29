@@ -1,0 +1,74 @@
+---------------- 1
+
+CREATE ROLE vendedor;
+
+REVOKE ALL PRIVILEGES ON vendedor TO prova2;
+
+GRANT ALL PRIVILEGES ON vendedor TO venda;
+
+REVOKE SELECT ON vendedor FROM venda;
+
+GRANT ALL PRIVILEGES ON vendedor TO itemvenda;
+
+REVOKE SELECT ON vendedor FROM itemvenda;
+
+
+---------------- 2
+
+CREATE OR REPLACE FUNCTION gera_venda()
+RETURNS trigger AS $$
+BEGIN
+	IF OLD.aprovacao IS NULL AND NEW.aprovacao IS NOT NULL THEN
+		INSERT INTO venda(idVenda, data, valorTotal) VALUES (NEW.idOrcamento, NEW.aprovacao, 0, codigoAux);
+		INSERT INTO itemvenda(idVenda, idItem, qtde, valorPago, idProduto)
+		SELECT idOrcamento, idProduto, quantidade, valorPago FROM itemorcamento WHERE idOrcamento = NEW.idOrcamento;
+		UPDATE produto SET qtde = qtde - new.qtde WHERE idProduto = new.idProduto;
+	END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER gera_venda AFTER INSERT ON orcamento
+FOR EACH ROW EXECUTE FUNCTION gera_venda();
+
+
+---------------- 3
+
+CREATE OR REPLACE PROCEDURE atualiza_valor(x INT) AS $$
+BEGIN
+	UPDATE produto SET valor = valor + ((x * valor)/100);
+END;
+$$ LANGUAGE plpgsql;
+
+CALL atualiza_valor(5);
+
+--Agua mineral foi de 10 para 10.5
+--Arroz foi de 40 para 42
+
+CALL atualiza_valor(100);
+
+--Agua mineral foi de 10.5 para 21
+--Arroz foi de 42 para 84
+
+
+---------------- 4
+
+CREATE OR REPLACE FUNCTION gerar_valor_venda(cod INT) RETURNS float AS $$
+DECLARE total FLOAT;
+BEGIN
+        total = (select SUM(qtde * valorpago) from itemvenda where idvenda = cod);
+	return total;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT gerar_valor_venda(1);
+
+
+---------------- 5
+
+CREATE OR REPLACE VIEW relatorio_produto AS SELECT 
+p.nomeproduto, SUM(iv.idVenda) as quantasVendas, iv.qtde as qtdeVendida, p.qtde as estoque FROM produto p
+INNER JOIN itemvenda iv ON p.idProduto = iv.idProduto INNER JOIN venda v ON iv.idVenda = v.idVenda
+GROUP BY p.nomeproduto, iv.qtde, p.qtde;
+
+select * from relatorio_produto
+

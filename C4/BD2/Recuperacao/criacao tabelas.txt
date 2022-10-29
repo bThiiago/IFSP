@@ -1,0 +1,104 @@
+CREATE TABLE IF NOT EXISTS orcamento (
+  idorcamento INT NOT NULL,
+  datavalidade DATE NULL,
+  dataaprovacao DATE NULL,
+  valortotal DOUBLE PRECISION NULL,
+  status VARCHAR(1) NULL,
+  nome VARCHAR(60) NULL,
+  telefone VARCHAR(15) NULL,
+PRIMARY KEY (idorcamento));
+
+CREATE TABLE IF NOT EXISTS produto (
+  idproduto INT NOT NULL,
+  nomeproduto VARCHAR(60) NULL,
+  qtdeestoque INT NULL,
+  qtdecomprar INT NULL,
+  preco DOUBLE PRECISION NULL,
+PRIMARY KEY (idproduto));
+
+CREATE TABLE IF NOT EXISTS orcamento_has_produto (
+  orcamento_idorcamento INT NOT NULL,
+  produto_idproduto INT NOT NULL,
+  qtde INT NULL,
+  preco DOUBLE PRECISION NULL,
+  PRIMARY KEY (orcamento_idorcamento, produto_idproduto),
+  FOREIGN KEY (orcamento_idorcamento) REFERENCES orcamento (idorcamento),
+FOREIGN KEY (produto_idproduto) REFERENCES produto (idproduto));
+
+CREATE TABLE IF NOT EXISTS compra (
+  idcompra INT NOT NULL,
+  data DATE NULL,
+  valortotal DOUBLE PRECISION NULL,
+PRIMARY KEY (idcompra));
+
+CREATE TABLE IF NOT EXISTS produto_has_compra (
+  produto_idproduto INT NOT NULL,
+  compra_idcompra INT NOT NULL,
+  PRIMARY KEY (produto_idproduto, compra_idcompra),
+  FOREIGN KEY (produto_idproduto) REFERENCES produto (idproduto),
+FOREIGN KEY (compra_idcompra) REFERENCES compra (idcompra));
+
+CREATE TABLE IF NOT EXISTS cliente (
+  idcliente INT NOT NULL,
+  nomecliente VARCHAR(60) NULL,
+  endereco VARCHAR(60) NULL,
+  uf VARCHAR(2) NULL,
+  cep VARCHAR(10) NULL,
+  gastos DOUBLE PRECISION NULL,
+  telefone VARCHAR(15) NULL,
+  PRIMARY KEY (idcliente));
+
+CREATE TABLE IF NOT EXISTS venda (
+  idvenda INT NOT NULL,
+  data DATE NULL,
+  valortotal DOUBLE PRECISION NULL,
+  idcliente INT NOT NULL,
+  PRIMARY KEY (idvenda),
+FOREIGN KEY (idcliente) REFERENCES cliente (idcliente));
+
+CREATE TABLE IF NOT EXISTS venda_has_produto (
+  venda_idvenda INT NOT NULL,
+  produto_idproduto INT NOT NULL,
+  qtdevendida INT NULL,
+  valor DOUBLE PRECISION NULL,
+  qtdependente INT NULL,
+  PRIMARY KEY (venda_idvenda, produto_idproduto),
+  FOREIGN KEY (venda_idvenda) REFERENCES venda (idvenda),
+FOREIGN KEY (produto_idproduto) REFERENCES produto (idproduto));
+
+CREATE TABLE IF NOT EXISTS caixa (
+  idcaixa INT NOT NULL,
+  saldo DOUBLE PRECISION NULL,
+  data DATE NULL,
+  status VARCHAR(1) NULL,
+PRIMARY KEY (idcaixa));
+
+CREATE TABLE IF NOT EXISTS debitocliente (
+  idcliente INT NOT NULL,
+  iddebitocliente INT NOT NULL,
+  vencimento DATE NULL,
+  valor DOUBLE PRECISION NULL,
+  datapagamento DATE NULL,
+  idcaixa INT NOT NULL,
+  PRIMARY KEY (idcliente, iddebitocliente),
+  FOREIGN KEY (idcliente) REFERENCES cliente (idcliente),
+FOREIGN KEY (idcaixa) REFERENCES caixa (idcaixa));
+
+CREATE TABLE IF NOT EXISTS despesa (
+  idano INT NOT NULL,
+  idlancamento INT NOT NULL,
+  descricao VARCHAR(50) NULL,
+  vencimento DATE NULL,
+  valor DOUBLE PRECISION NULL,
+  idcaixa INT NOT NULL,
+  PRIMARY KEY (idano, idlancamento),
+FOREIGN KEY (idcaixa) REFERENCES caixa (idcaixa));
+
+CREATE TABLE IF NOT EXISTS lancamentocaixa (
+  idcaixa INT NOT NULL,
+  idlancamentocaixa INT NOT NULL,
+  descricao VARCHAR(50) NULL,
+  valor DOUBLE PRECISION NULL,
+  tipo VARCHAR(1) NULL,
+  PRIMARY KEY (idcaixa, idlancamentocaixa),
+FOREIGN KEY (idcaixa) REFERENCES caixa (idcaixa));

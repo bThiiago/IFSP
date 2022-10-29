@@ -1,0 +1,33 @@
+insert into curso (nomecurso, totalhoras, valordocurso)
+	values ('ED', 0, 100);
+
+insert into disciplinas (nome, cargahoraria, qtdehoras)
+	values ('estructure dois', 100, 100);
+	
+insert into curso_has_disciplinas (idcurso, iddisciplinas)
+	values (1, 2);
+
+CREATE FUNCTION provabim1.disciplinas_insert()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	UPDATE curso SET totalhoras = totalhoras + (select qtdehoras from disciplinas where iddisciplinas = new.iddisciplinas);
+	RETURN NEW;
+END;
+$BODY$;
+
+
+CREATE FUNCTION provabim1.matricula_insert()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	UPDATE turmas SET totalaluno = totalaluno + 1 where idturmas = new.idturmas;
+	RETURN NEW;
+END;
+$BODY$;
